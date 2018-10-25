@@ -1,0 +1,6 @@
+%token BEGIN END EOF
+%token <string> IDENTIFIER
+%token NFA NPDA NDTM
+%token STATE
+%token LEFTPAREN RIGHTPAREN
+%token COLON COMMA SEMICOLON
