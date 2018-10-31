@@ -26,7 +26,7 @@ let alpha = ['a'-'z' 'A'-'Z']
 let ident = (alpha | digit) (alpha | digit | '_')*
 
 rule token = parse
-    | ":"      { COLON }
+    | ':'      { COLON }
     | ','      { COMMA }
     | ';'      { SEMICOLON }
     | '('      { LEFTPAREN }
@@ -34,7 +34,7 @@ rule token = parse
     | ident as i {
         let l = String.lowercase i in
         try List.assoc l keywords
-        with Not_found -> IDENTIFIER i   
+        with Not_found -> IDENT i   
     }
     | '\n'     { incr lineno; token lexbuf }
     | blank    { token lexbuf }
