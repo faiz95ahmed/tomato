@@ -3,9 +3,9 @@ Tomato Language Compiler
 
 # Completed
 - Lexer
+- Parser
 
 # TODO
-- Parser
 - Code Generator
 - Executor (see below)
 - Debug tools: break-states (seeing tape/stack contents)
