@@ -1,0 +1,25 @@
+nfa start x begin
+  state x begin
+    a : y
+    b : x
+    c : x
+  end
+
+  state y begin
+    a : y
+    b : z
+    c : x
+  end
+
+  state z begin
+    a : x
+    b : z
+    c : f
+  end
+
+  final f begin
+    a : f
+    b : f
+    c : f  
+  end
+end

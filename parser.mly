@@ -13,11 +13,11 @@ open Tree
 
 %token BEGIN END EOF
 %token NFA NPDA NDTM
-%token STATE
+%token STATE START FINAL
 
 /* punctuation */
 
-%token LEFTPAREN RIGHTPAREN
+%token LPAR RPAR
 %token COLON COMMA SEMICOLON
 
 
@@ -30,9 +30,9 @@ open Tree
 /* general machine grammar */
 
 program:
-    NFA BEGIN nfaStateList END              { NFA $3 }
-  | NPDA BEGIN npdaStateList END            { NPDA $3 }
-  | NDTM BEGIN ndtmStateList END            { NDTM $3} ;
+    NFA START IDENT BEGIN nfaStateList END              { NFA ($3, $5) }
+  | NPDA START IDENT BEGIN npdaStateList END            { NPDA ($3, $5) }
+  | NDTM START IDENT BEGIN ndtmStateList END            { NDTM ($3, $5)} ;
 
 
 /***********************/
@@ -44,18 +44,19 @@ nfaStateList:
   | nfaState nfaStateList                   { $1 :: $2 } ;
 
 nfaState:
-    STATE IDENT BEGIN nfaTransitions END    { NFAState ($2, $4)} ;
+    STATE IDENT BEGIN nfaTransitions END    { NFAState (make_nfa_state ($2, $4, false)) }
+  | FINAL IDENT BEGIN nfaTransitions END    { NFAState (make_nfa_state ($2, $4, true)) } ;
 
 nfaTransitions:
     nfaTransition                           { [$1] }
   | nfaTransition nfaTransitions            { $1 :: $2 } ;
 
 nfaTransition:
-    IDENT COLON nfaNextStates               { NFATransition ($1, $3)} ;
+    IDENT COLON nfaNextStates               { NFATransition (make_nfa_transition ($1, $3)) } ;
 
 nfaNextStates:
     nfaNextState                            { [$1] }
-  | nfaNextState COMMA nfaNextStates        { $1 :: $2 } ;
+  | nfaNextState COMMA nfaNextStates        { $1 :: $3 } ;
 
 nfaNextState:
     IDENT                                   { $1 } ;
@@ -70,7 +71,8 @@ npdaStateList:
   | npdaState npdaStateList                 { $1 :: $2 } ;
 
 npdaState:
-    STATE IDENT BEGIN npdaTransitions END   { NPDAState ($2, $4)} ;
+    STATE IDENT BEGIN npdaTransitions END    { NPDAState (make_npda_state ($2, $4, false)) }
+  | FINAL IDENT BEGIN npdaTransitions END    { NPDAState (make_npda_state ($2, $4, true)) } ;
 
 npdaTransitions:
     npdaTransition                          { [$1] }
@@ -78,11 +80,11 @@ npdaTransitions:
 
 npdaTransition:
     LPAR IDENT COMMA IDENT RPAR COLON npdaNextStates
-                                            { NPDATransition ($2, $4, $7)} ;
+                                            { NPDATransition (make_npda_transition ($2, $4, $7)) } ;
 
 npdaNextStates:
     npdaNextState                           { [$1] }
-  | npdaNextState COMMA npdaNextStates      { $1 :: $2 } ;
+  | npdaNextState COMMA npdaNextStates      { $1 :: $3 } ;
 
 npdaNextState:
     LPAR IDENT COMMA IDENT RPAR             { ($2, $4) } ;
@@ -97,18 +99,19 @@ ndtmStateList:
   | ndtmState ndtmStateList                 { $1 :: $2 } ;
 
 ndtmState:
-    STATE IDENT BEGIN ndtmTransitions END   { NDTMState ($2, $4)} ;
+    STATE IDENT BEGIN ndtmTransitions END    { NDTMState (make_ndtm_state ($2, $4, false)) }
+  | FINAL IDENT BEGIN ndtmTransitions END    { NDTMState (make_ndtm_state ($2, $4, true)) } ;
 
 ndtmTransitions:
     ndtmTransition                          { [$1] }
   | ndtmTransition ndtmTransitions          { $1 :: $2 } ;
 
 ndtmTransition:
-    IDENT COLON ndtmNextStates              { NDTMTransition ($1, $3)} ;
+    IDENT COLON ndtmNextStates              { NDTMTransition (make_ndtm_transition ($1, $3)) } ;
 
 ndtmNextStates:
     ndtmNextState                           { [$1] }
-  | ndtmNextState COMMA ndtmNextStates      { $1 :: $2 } ;
+  | ndtmNextState COMMA ndtmNextStates      { $1 :: $3 } ;
 
 ndtmNextState:
     LPAR IDENT COMMA IDENT COMMA IDENT RPAR { ($2, $4, $6) } ;

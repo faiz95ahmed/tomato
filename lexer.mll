@@ -10,7 +10,7 @@ see: http://caml.inria.fr/pub/docs/manual-ocaml/lexyacc.html
   let lineno = ref 1                      (* Current line in input file *)
 
   let keywords = [
-    "begin", BEGIN; "end", END; "nfa", NFA; "npda", NPDA; "ndtm", NDTM; "state", STATE
+    "begin", BEGIN; "end", END; "nfa", NFA; "npda", NPDA; "ndtm", NDTM; "state", STATE; "start", START; "final", FINAL
     
   ]
 
@@ -29,8 +29,8 @@ rule token = parse
     | ':'      { COLON }
     | ','      { COMMA }
     | ';'      { SEMICOLON }
-    | '('      { LEFTPAREN }
-    | ')'      { RIGHTPAREN }
+    | '('      { LPAR }
+    | ')'      { RPAR }
     | ident as i {
         let l = String.lowercase i in
         try List.assoc l keywords
