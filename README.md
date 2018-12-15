@@ -4,10 +4,13 @@ Tomato Language Compiler
 # Completed
 - Lexer
 - Parser
+- Semantic Analyser
+- Code Generator: NFA
+- Executor (see below): NFA
 
 # TODO
-- Code Generator
-- Executor (see below)
+- Code Generator: NPDA, NDTM
+- Executor (see below): NPDA, NDTM
 - Debug tools: break-states (seeing tape/stack contents)
 
 # Executor
